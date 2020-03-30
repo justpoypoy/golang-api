@@ -1,7 +1,7 @@
 SELF NOTES
 
 step 1
-go mod init <nama module>
+go mod init `<nama module>`
 ex: go mod init checkversi.go
 
 didalam folder lib lakukan go mod juga
