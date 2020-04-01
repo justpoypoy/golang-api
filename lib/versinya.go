@@ -23,6 +23,7 @@ func VersionInfo(c *gin.Context) {
 	var os string
 	var versiID string
 
+	var dataResponse InfoVersionResponse
 	var InfoStruct InfoVersion
 
 	// validasi request input sesuai yang didefinisikan di InfoVersion
@@ -38,6 +39,7 @@ func VersionInfo(c *gin.Context) {
 	if err != nil {
 		log.Println(err.Error())
 	}
+	// log.Println(paramUUID)
 
 	// tutup koneksi database dengan defer,
 	// defer akan tereksekusi pada saat kode terakhir jalan
@@ -46,35 +48,42 @@ func VersionInfo(c *gin.Context) {
 
 	// statement query ke database
 	query, err := db.Query("SELECT id, version, os FROM version WHERE uuid = ?", InfoStruct.Uuid)
+	defer query.Close()
+	// tutup statement query dengan method defer
 
 	// check error jika ada
 	if err != nil {
 		log.Println(err.Error())
 	}
+	// log.Println(query)
 
 	// memproses hasil statement query
 	if query.Next() {
 		// variable yang diset untuk menampung field dipakai disini
 		query.Scan(&versiID, &versi, &os)
-	}
-	query.Close()
-	// tutup statement query
 
-	// set json format
-	// InfoVersionResponse => WAJIB didefine di struct jika ingin menampilkan data yang akan dikeluarkan
-	// &ResultInfoVersion => WAJIB didefine di struct jika ingin menampilkan data yang akan dikeluarkan
-	responseJson := InfoVersionResponse{
-		Success: true,
-		Message: "sukses",
-		Code:    "200",
-		Result: &ResultInfoVersion{
-			Version:          versi,
-			Operating_system: os,
-		},
-	}
+		// set json format
+		// InfoVersionResponse => WAJIB didefine di struct jika ingin menampilkan data yang akan dikeluarkan
+		// &ResultInfoVersion => WAJIB didefine di struct jika ingin menampilkan data yang akan dikeluarkan
 
+		dataResponse = InfoVersionResponse{
+			Success: true,
+			Message: "sukses",
+			Code:    "200",
+			Result: &ResultInfoVersion{
+				Version:          versi,
+				Operating_system: os,
+			},
+		}
+	} else {
+		dataResponse = InfoVersionResponse{
+			Success: false,
+			Code:    "400",
+			Message: "Data not found.",
+		}
+	}
 	// set responseJson ke format JSON
-	Respjson, _ := json.Marshal(responseJson)
+	Respjson, _ := json.Marshal(dataResponse)
 	// tambahkan Content-Type application/json
 	c.Header("Content-Type", "application/json; charset=utf-8")
 	// set status header 200 jika data sukses
