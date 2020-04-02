@@ -8,6 +8,7 @@ import (
 func main() {
 	gin.SetMode(gin.ReleaseMode)
 	route := gin.New()
+	route.Use(Lib.LoggerJSONMiddleware())
 	grouping := route.Group("/base/v1")
 	{
 		// Lib.VersionInfo => memanggil function Public yg ada di module Lib

@@ -15,3 +15,14 @@ type ResultInfoVersion struct {
 	Version          string `json:"versi"`
 	Operating_system string `json:"os"`
 }
+
+type LogJSON struct {
+	ClientIP   string  `json:"clientip"`
+	TimeStamp  string  `json:"timestamp"`
+	Method     string  `json:"method"`
+	Path       string  `json:"path"`
+	StatusCode int     `json:"statuscode"`
+	Latency    float64 `json:"latency"`
+	Request    string  `json:"request"`
+	Response   string  `json:"response"`
+}
