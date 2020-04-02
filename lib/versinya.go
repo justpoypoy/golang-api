@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"encoding/json"
 	"log"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 	_ "github.com/go-sql-driver/mysql"
@@ -22,6 +23,7 @@ func VersionInfo(c *gin.Context) {
 	var versi string
 	var os string
 	var versiID string
+	var HTTPSTATUS int
 
 	var dataResponse InfoVersionResponse
 	var InfoStruct InfoVersion
@@ -75,17 +77,21 @@ func VersionInfo(c *gin.Context) {
 				Operating_system: os,
 			},
 		}
+		HTTPSTATUS = http.StatusOK
 	} else {
 		dataResponse = InfoVersionResponse{
 			Success: false,
 			Code:    "400",
 			Message: "Data not found.",
 		}
+		HTTPSTATUS = http.StatusBadRequest
 	}
 	// set responseJson ke format JSON
 	Respjson, _ := json.Marshal(dataResponse)
 	// tambahkan Content-Type application/json
 	c.Header("Content-Type", "application/json; charset=utf-8")
 	// set status header 200 jika data sukses
-	c.String(200, string(Respjson))
+	log.Println(HTTPSTATUS)
+
+	c.String(HTTPSTATUS, string(Respjson))
 }
