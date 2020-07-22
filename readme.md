@@ -11,3 +11,20 @@ didalam folder lib bisa berisikan file apa saja, asal declare nama packagenya se
 
 
 jangan lupa go install untuk download dependecies nya 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
